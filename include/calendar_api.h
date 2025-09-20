@@ -3,19 +3,18 @@
 #ifndef CALENDAR_API_H
 #define CALENDAR_API_H
 
-#include <ESP8266WiFi.h>             // <--- ADD THIS for WiFi.status()
-#include <ESP8266HTTPClient.h>
-#include <WiFiClientSecureBearSSL.h>
-#include <ArduinoJson.h>
+#include <WiFi.h>           // For WiFi functions on ESP32
+#include <HTTPClient.h>     // For HTTP(S) requests
+#include <WiFiClientSecure.h> // For secure HTTPS connections
+#include <ArduinoJson.h>    // For parsing JSON data
 
-// Declaration of global variables as extern
-// This tells the compiler that these variables will be defined in the .cpp file
-extern String _currentCalendarSummary; // For summary on the main screen
-extern String _detailedCalendarInfo;   // For details on a separate page
+// Global variables (defined in calendar_api.cpp)
+extern String _currentCalendarSummary; // Summary for main screen
+extern String _detailedCalendarInfo;   // Detailed view
 
 // Function declarations
-void getCalendarSchedule();
-String getCalendarInfo();            // Returns summary
-String getDetailedCalendarInfo();    // Returns detailed info
+void getCalendarSchedule();        // Fetch calendar data
+String getCalendarInfo();          // Returns summary string
+String getDetailedCalendarInfo();  // Returns detailed string
 
 #endif

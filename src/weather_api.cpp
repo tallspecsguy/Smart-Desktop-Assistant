@@ -3,8 +3,8 @@
 #include "weather_api.h" // Include header files
 
 // Define global variables declared as extern in the header
-String temperature = "??"; //Current Temperature
-String condition = "??"; //Current Weather Condition
+String temperature = "??"; // Current Temperature
+String condition = "??";   // Current Weather Condition
 String _detailedWeatherInfo = "Tidak ada detail cuaca"; // Detailed weather info
 
 // Convert weather codes into human-readable descriptions
@@ -33,22 +33,22 @@ void getWeatherData() {
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("[Weather] Connecting to API...");
 
-    std::unique_ptr<BearSSL::WiFiClientSecure> client(new BearSSL::WiFiClientSecure);
-    client->setInsecure(); // Allow HTTPS without strict certificate validation
+    WiFiClientSecure client;
+    client.setInsecure(); // Disable certificate verification (needed for Wokwi/ESP32)
 
     HTTPClient http;
     http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 
     String url = "https://api.open-meteo.com/v1/forecast?latitude=-6.9147&longitude=107.6098&current_weather=true&temperature_unit=celsius&windspeed_unit=ms&precipitation_unit=mm"; 
 
-    if (http.begin(*client, url)) {
+    if (http.begin(client, url)) {
       int httpCode = http.GET();
       Serial.print("[Weather] HTTP Response Code: ");
       Serial.println(httpCode);
 
       if (httpCode == HTTP_CODE_OK) {
         String payload = http.getString();
-        DynamicJsonDocument doc(2048); // Tingkatkan ukuran buffer JSON jika Anda mengambil lebih banyak data
+        DynamicJsonDocument doc(2048); 
 
         DeserializationError error = deserializeJson(doc, payload);
 
@@ -80,7 +80,6 @@ void getWeatherData() {
                                    + "Condition: " + interpretWeatherCode(weathercode_val) + "\n"
                                    + "Wind Speed: " + String(windspeed_val, 1) + " m/s\n"
                                    + "Wind Direction: " + String(winddirection_val) + "°";
-              // Anda bisa menambahkan kelembaban, tekanan, dll. jika Anda mengambilnya dari API
 
               Serial.println("[Weather] Temperature: " + temperature);
               Serial.println("[Weather] Condition: " + condition);
@@ -121,7 +120,8 @@ void getWeatherData() {
 
 // Get weather summary (short form)
 String getWeatherInfo() {
-  if (temperature == "No WiFi" || temperature == "HTTP Err" || temperature == "Error" || temperature == "Data Err" || temperature == "Struct Err" || temperature == "Conn Err") {
+  if (temperature == "No WiFi" || temperature == "HTTP Err" || temperature == "Error" || 
+      temperature == "Data Err" || temperature == "Struct Err" || temperature == "Conn Err") {
     return temperature;
   }
   return temperature + " | " + condition;

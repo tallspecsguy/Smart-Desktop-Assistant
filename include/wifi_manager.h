@@ -1,7 +1,8 @@
+
 #ifndef WIFI_MANAGER_H
 #define WIFI_MANAGER_H
 
-#include <ESP8266WiFi.h>
+#include<WiFi.h> 
 
 void initWiFi(const char* ssid, const char* password) {
   Serial.print("[WiFi] Connecting to ");
